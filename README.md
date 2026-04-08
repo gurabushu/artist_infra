@@ -6,8 +6,7 @@
 
 
 ## ２、ER図
-<img src="https://github.com/user-attachments/files/26559164/ER.pdf" >
-
+<img width="1470" height="794" alt="TOP画" src="https://github.com/user-attachments/files/26559164/ER.pdf"/>
 
 ---
 
