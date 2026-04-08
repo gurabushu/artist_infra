@@ -1,8 +1,6 @@
 class SessionsController < ApplicationController
-  def new
-  end
 
-  def create
+  def new
     user = User.find_by(email: params[:email])
 
     if user&.authenticate(params[:password])
@@ -18,4 +16,10 @@ class SessionsController < ApplicationController
     session.delete(:user_id)
     redirect_to login_path, notice: "ログアウトしました"
   end
+end
+
+private
+
+def back_to_home
+  redirect_to root_path
 end
