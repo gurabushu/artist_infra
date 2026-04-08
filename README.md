@@ -6,7 +6,7 @@
 
 
 ## ２、ER図
-[ER図アーティストのための.pdf](https://github.com/user-attachments/files/26559164/ER.pdf)
+<img src="https://github.com/user-attachments/files/26559164/ER.pdf" >
 
 
 ---
