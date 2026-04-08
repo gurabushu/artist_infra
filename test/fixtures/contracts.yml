@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  project: one
+  client: one
+  artist: one
+  contract_type: 1
+  status: 1
+  agreed_amount: 1
+  started_on: 2026-04-08
+  ended_on: 2026-04-08
+  renewal_cycle: MyString
+
+two:
+  project: two
+  client: two
+  artist: two
+  contract_type: 1
+  status: 1
+  agreed_amount: 1
+  started_on: 2026-04-08
+  ended_on: 2026-04-08
+  renewal_cycle: MyString
