@@ -1,24 +1,17 @@
-# README
+# 個人アーティストのための営業インフラネットワークアプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+## １、サービス概要
 
-* Ruby version
 
-* System dependencies
 
-* Configuration
+## ２、ER図
+[ER図アーティストのための.pdf](https://github.com/user-attachments/files/26559164/ER.pdf)
 
-* Database creation
 
-* Database initialization
+---
 
-* How to run the test suite
+## 3、サービスURL
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
-
-* ...
+---
