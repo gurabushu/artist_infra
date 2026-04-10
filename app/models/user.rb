@@ -14,6 +14,20 @@ class User < ApplicationRecord
     model: "モデル"
   }.freeze
 
+  RANK_LABELS = {
+    beginner: "ビギナー",
+    bronze: "ブロンズ",
+    silver: "シルバー",
+    gold: "ゴールド"
+  }.freeze
+
+  RANK_REQUIREMENTS = {
+    beginner: { completed_contracts: 0, review_count: 0, average_rating: 0.0 },
+    bronze: { completed_contracts: 1, review_count: 1, average_rating: 3.0 },
+    silver: { completed_contracts: 5, review_count: 3, average_rating: 4.0 },
+    gold: { completed_contracts: 12, review_count: 8, average_rating: 4.6 }
+  }.freeze
+
   has_secure_password
 
   has_one :profile, dependent: :destroy
@@ -113,6 +127,51 @@ class User < ApplicationRecord
     ROLE_LABELS[role&.to_sym] || "-"
   end
 
+  def rank_label
+    RANK_LABELS[current_rank]
+  end
+
+  def current_rank
+    return :gold if qualified_for_rank?(:gold)
+    return :silver if qualified_for_rank?(:silver)
+    return :bronze if qualified_for_rank?(:bronze)
+
+    :beginner
+  end
+
+  def received_review_count
+    reviews_received.count
+  end
+
+  def average_received_rating
+    reviews_received.average(:rating).to_f.round(1)
+  end
+
+  def completed_contracts_count
+    contracts_as_artist.status_completed.count
+  end
+
+  def active_app_subscription?
+    billing_subscriptions
+      .status_active
+      .where("current_period_end IS NULL OR current_period_end >= ?", Time.current)
+      .exists?
+  end
+
+  def silver_rank_or_higher?
+    [:silver, :gold].include?(current_rank)
+  end
+
+  def can_offer_continuous_work?
+    silver_rank_or_higher? && active_app_subscription?
+  end
+
+  def active_subscription_plan
+    return unless can_offer_continuous_work?
+
+    subscription_plans.active_only.order(updated_at: :desc).first
+  end
+
   def liked?(other_user)
     favorites.exists?(target_user: other_user)
   end
@@ -128,5 +187,15 @@ class User < ApplicationRecord
         .where(favorites: { target_user_id: id })
         .where(id: favorites.select(:target_user_id))
         .distinct
+  end
+
+  private
+
+  def qualified_for_rank?(rank)
+    requirement = RANK_REQUIREMENTS.fetch(rank)
+
+    completed_contracts_count >= requirement[:completed_contracts] &&
+      received_review_count >= requirement[:review_count] &&
+      average_received_rating >= requirement[:average_rating]
   end
 end

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
 
   resources :users, only: [:index, :show, :create, :new] do
     resource :favorite, only: [:create, :destroy]
+    resource :creator_subscription, only: [:create], controller: "creator_subscriptions"
 
     member do
       get :chat, to: "chats#show"
@@ -17,6 +18,13 @@ Rails.application.routes.draw do
 
   resource :mypage, only: [:show, :update], controller: "profiles" do
     delete :avatar_image, to: "profiles#destroy_avatar_image"
+  end
+
+  resource :billing_subscription, only: [:create, :destroy]
+  resource :subscription_plan, only: [:create, :update]
+
+  resources :contracts, only: [] do
+    resources :reviews, only: [:new, :create]
   end
 
   get    "login",  to: "sessions#new"

@@ -5,7 +5,27 @@
 <div class="profile-card mypage-form">
   <h3 style="background-color: #E0E0E0; margin-bottom: 16px;">プロフィール設定</h3>
 
+  <div class="form-group">
+    <p style="background-color: #E0E0E0; color: #222;">現在のランク: <strong><%= current_user.rank_label %></strong></p>
+    <p style="background-color: #E0E0E0; color: #222;">平均評価: <%= current_user.received_review_count.positive? ? current_user.average_received_rating : "まだ評価なし" %></p>
+    <p style="background-color: #E0E0E0; color: #222;">完了案件数: <%= current_user.completed_contracts_count %></p>
+    <p style="background-color: #E0E0E0; color: #222; margin-bottom: 0;">継続案件解放条件: シルバーランク以上 かつ アプリ課金中</p>
+  </div>
+
   <%= form_with model: @profile, url: mypage_path, method: :patch, local: true do |f| %>
+    <% if @profile.errors.any? %>
+      <div class="form-group">
+        <p style="background-color: #E0E0E0; color: #b00020; margin-bottom: 8px;">
+          入力内容を確認してください。
+        </p>
+        <ul style="background-color: #E0E0E0; color: #b00020; margin: 0; padding-left: 20px;">
+          <% @profile.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
     <div class="form-group">
       <%= f.label :display_name, "表示名", style: "background-color: #E0E0E0; color: #222;" %><br>
       <%= f.text_field :display_name %>
@@ -22,9 +42,6 @@
       <% if @profile.avatar_image.attached? %>
         <p style="background-color: #E0E0E0; color: #222; margin-top: 8px;">
           現在のファイル: <%= @profile.avatar_image.filename %>
-        </p>
-        <p style="background-color: #E0E0E0; margin-top: 8px;">
-          <%= button_to "顔写真ファイルを削除", avatar_image_mypage_path, method: :delete, class: "button danger-button", form: { class: "inline-button-form" } %>
         </p>
       <% end %>
     </div>
@@ -54,7 +71,84 @@
     </div>
   <% end %>
 
+  <% if @profile.avatar_image.attached? %>
+    <div class="form-group">
+      <p style="background-color: #E0E0E0; margin-top: 8px;">
+        <%= button_to "顔写真ファイルを削除", avatar_image_mypage_path, method: :delete, class: "button danger-button", form: { class: "inline-button-form" } %>
+      </p>
+    </div>
+  <% end %>
+
   <div class="cta" style="background-color: #E0E0E0; margin-bottom: 0;">
     <%= link_to "自分のプロフィールを見る", user_path(current_user), class: "button" %>
+  </div>
+
+  <div class="profile-card" style="margin-top: 24px;">
+    <h3 style="background-color: #E0E0E0; margin-bottom: 16px;">継続案件機能の課金</h3>
+    <p style="background-color: #E0E0E0; color: #222;">
+      状態:
+      <%= current_user.active_app_subscription? ? "有効" : "未加入" %>
+    </p>
+    <% if @billing_subscription&.current_period_end.present? %>
+      <p style="background-color: #E0E0E0; color: #222;">有効期限: <%= l(@billing_subscription.current_period_end, format: :short) %></p>
+    <% end %>
+    <% if current_user.active_app_subscription? %>
+      <%= button_to "課金を停止する", billing_subscription_path, method: :delete, class: "button danger-button", form: { class: "inline-button-form" } %>
+    <% else %>
+      <%= button_to "継続案件機能に課金する", billing_subscription_path, method: :post, class: "button", form: { class: "inline-button-form" } %>
+    <% end %>
+  </div>
+
+  <div class="profile-card" style="margin-top: 24px;">
+    <h3 style="background-color: #E0E0E0; margin-bottom: 16px;">継続案件プラン設定</h3>
+
+    <% if @subscription_plan.errors.any? %>
+      <div class="form-group">
+        <p style="background-color: #E0E0E0; color: #b00020; margin-bottom: 8px;">継続案件プランを保存できませんでした。</p>
+        <ul style="background-color: #E0E0E0; color: #b00020; margin: 0; padding-left: 20px;">
+          <% @subscription_plan.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <%= form_with model: @subscription_plan, url: @subscription_plan.persisted? ? subscription_plan_path : subscription_plan_path, method: @subscription_plan.persisted? ? :patch : :post, local: true do |f| %>
+      <div class="form-group">
+        <%= f.label :title, "プラン名", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.text_field :title, placeholder: "例: 月次制作パートナー" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :description, "プラン概要", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.text_area :description, placeholder: "毎月どんな継続対応をするかを記入してください" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :price, "料金", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.number_field :price, min: 0, step: 1, placeholder: "例: 50000" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :cycle, "契約サイクル", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.text_field :cycle, placeholder: "例: monthly" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :delivery_detail, "提供内容", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.text_area :delivery_detail, placeholder: "毎月の納品内容や対応範囲" %>
+      </div>
+
+      <div class="form-group">
+        <label style="background-color: #E0E0E0; color: #222;">
+          <%= f.check_box :active %>
+          公開する
+        </label>
+      </div>
+
+      <div class="form-group">
+        <%= f.submit "継続案件プランを保存", class: "button" %>
+      </div>
+    <% end %>
   </div>
 </div>

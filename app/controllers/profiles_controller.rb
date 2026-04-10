@@ -1,6 +1,7 @@
 class ProfilesController < ApplicationController
   before_action :require_login
   before_action :set_profile
+  before_action :set_dashboard_state, only: [:show, :update]
 
   def show
   end
@@ -34,5 +35,10 @@ class ProfilesController < ApplicationController
       :avatar_url,
       :avatar_image
     )
+  end
+
+  def set_dashboard_state
+    @billing_subscription = current_user.billing_subscriptions.order(updated_at: :desc).first
+    @subscription_plan = current_user.subscription_plans.order(updated_at: :desc).first_or_initialize(active: false)
   end
 end
