@@ -1,0 +1,39 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+
+<h2 style="text-align: center;">ユーザー一覧</h2>
+<p style="text-align: center; margin-bottom: 16px; color: #000000;">
+	ログイン中: <%= current_user.name.presence || current_user.email %>
+</p>
+<section class="feature" style="margin-top: 16px; padding: 24px;">
+	<% if @users.any? %>
+		<table style="width: 100%; border-collapse: collapse; background-color: #E0E0E0;">
+			<thead>
+				<tr>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">名前</th>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">メール</th>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">職種</th>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">ステータス</th>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">マッチ</th>
+					<th style="padding: 10px; border-bottom: 1px solid #aaa; background-color: #E0E0E0; text-align: left;">詳細</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% @users.each do |user| %>
+					<tr>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;"><%= user.name.presence || "-" %></td>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;"><%= user.email.presence || "-" %></td>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;"><%= user.role_label %></td>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;"><%= user.status.presence || "-" %></td>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;"><%= current_user.matched_with?(user) ? "成立" : "未成立" %></td>
+						<td style="padding: 10px; border-bottom: 1px solid #ccc; background-color: #E0E0E0;">
+							<%= link_to "表示", user_path(user), style: "color: #386ca3; background-color: #E0E0E0;" %>
+						</td>
+					</tr>
+				<% end %>
+			</tbody>
+		</table>
+	<% else %>
+		<p style="background-color: #E0E0E0; text-align: center;">登録されているユーザーはまだいません。</p>
+	<% end %>
+</section>

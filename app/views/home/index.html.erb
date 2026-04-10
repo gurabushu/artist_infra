@@ -1,13 +1,5 @@
-<header class="header">
-  <h1 class="title">Creator Link</h1>
-  <nav class="navheader">
-    <ul class="nav-list">
-      <li><%= link_to "ホーム", root_path %></li>
-      <li><%= link_to "新規登録", new_user_path %></li>
-      <li><%= link_to "ログイン", login_path %></li>
-    </ul>
-  </nav>
-</header>
+
+<%= render "shared/site_header", title: "Creator Link" %>
 
 <%= image_tag "webapply_top_visual.png", alt: "Where talent is respected", class: "top-visual" %>
 
@@ -48,6 +40,12 @@
 </div>
 
 <div class="cta">
-  <%= link_to "無料で始める", new_user_path, class: "button" %>
-  <%= link_to "ログイン", login_path, class: "button secondary" %>
+  <% if logged_in? %>
+    <%= link_to "ユーザー一覧を見る", users_path, class: "button" %>
+  <% else %>
+    <%= link_to "無料で始める", new_user_path, class: "button" %>
+    <%= link_to "ログイン", login_path, class: "button secondary" %>
+  <% end %>
 </div>
+
+

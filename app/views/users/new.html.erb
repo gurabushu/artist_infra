@@ -1,0 +1,62 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<h1 class="session-title">新規登録</h1>
+
+<% if @user.errors.any? %>
+  <div class="session-form" style="margin-bottom: 16px;">
+    <p style="background-color: #E0E0E0; color: #b00020; font-weight: bold; margin-bottom: 12px;">
+      入力内容を確認してください。
+    </p>
+    <ul style="background-color: #E0E0E0; padding-left: 20px;">
+      <% @user.errors.full_messages.each do |message| %>
+        <li style="background-color: #E0E0E0; color: #b00020; list-style: disc;"><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="session-form">
+  <%= form_with model: @user, local: true do |f| %>
+    <div class="form-group">
+      <%= f.label :name, "名前", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_field :name, style: "width: 90%; padding: 8px; background-color: white; color: #222;" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :email, "メールアドレス", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.email_field :email, style: "width: 90%; padding: 8px; background-color: white; color: #222;" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :role, "職種", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.select :role, User::ROLE_LABELS.map { |role, label| [label, role] }, { prompt: "職種を選択してください" }, style: "width: 90%; padding: 8px; background-color: white; color: #222;" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.hidden_field :status, value: "active" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password, "パスワード", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.password_field :password, style: "width: 90%; padding: 8px; background-color: white; color: #222;" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :password_confirmation, "パスワード確認", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.password_field :password_confirmation, style: "width: 90%; padding: 8px; background-color: white; color: #222;" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit "登録する", class: "button" %>
+    </div>
+  <% end %>
+</div>
+
+<div class="cta">
+  <% if logged_in? %>
+    <%= link_to "ユーザー一覧", users_path, class: "button" %>
+  <% else %>
+    <%= link_to "ホーム", root_path, class: "button" %>
+    <%= link_to "ログイン", login_path, class: "button secondary" %>
+  <% end %>
+</div>

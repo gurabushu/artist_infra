@@ -1,8 +1,6 @@
-<h1 class="session-title">ログイン</h1>
+<%= render "shared/site_header", title: "Creator Link" %>
 
-<% if flash[:alert] %>
-  <p><%= flash[:alert] %></p>
-<% end %>
+<h1 class="session-title">ログイン</h1>
 
 <div class="session-form">
 <%= form_with url: login_path, method: :post, local: true do |f| %>
@@ -24,8 +22,12 @@
 
 
 <div class="cta">
-  <%= link_to "戻る", root_path, class: "button" %>
-  <%= link_to "新規登録", new_user_path, class: "button secondary" %>
+  <% if logged_in? %>
+    <%= link_to "ユーザー一覧", users_path, class: "button" %>
+  <% else %>
+    <%= link_to "戻る", root_path, class: "button" %>
+    <%= link_to "新規登録", new_user_path, class: "button secondary" %>
+  <% end %>
 </div>
 
 

@@ -1,0 +1,23 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<h2 class="session-title">マッチ一覧</h2>
+
+<section class="feature" style="margin-top: 16px; padding: 24px;">
+  <% if @matched_users.any? %>
+    <div class="matches-grid">
+      <% @matched_users.each do |user| %>
+        <article class="match-card">
+          <h3 class="match-card-title"><%= user.profile&.display_name.presence || user.name %></h3>
+          <p class="match-card-text">職種: <%= user.role_label %></p>
+          <p class="match-card-text">活動エリア: <%= user.profile&.area.presence || "未設定" %></p>
+          <div class="profile-actions">
+            <%= link_to "プロフィール", user_path(user), class: "button" %>
+            <%= link_to "チャット", chat_user_path(user), class: "button" %>
+          </div>
+        </article>
+      <% end %>
+    </div>
+  <% else %>
+    <p style="background-color: #E0E0E0; text-align: center;">相互いいねしたユーザーがまだいません。</p>
+  <% end %>
+</section>

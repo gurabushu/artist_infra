@@ -1,0 +1,68 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<div class="profile-card">
+  <h2 class="profile-name"><%= @user.profile&.display_name.presence || @user.name %> さんとチャット</h2>
+
+  <p class="profile-note">相互いいねが成立しているため、この画面でメッセージを送れます。</p>
+
+  <div class="chat-thread">
+    <% if @messages.any? %>
+      <% @messages.each do |message| %>
+        <div class="chat-bubble <%= message.sender == current_user ? "chat-bubble-own" : "chat-bubble-other" %>">
+          <p class="chat-meta"><%= message.sender.profile&.display_name.presence || message.sender.name %> <span><%= l(message.created_at, format: :short) %></span></p>
+          <% if message.body.present? %>
+            <div class="chat-body"><%= simple_format(message.body) %></div>
+          <% end %>
+
+          <% if message.files.attached? %>
+            <div class="chat-files">
+              <% message.files.each do |file| %>
+                <div class="chat-file-item">
+                  <% if file.image? %>
+                    <%= link_to url_for(file), target: "_blank", rel: "noopener" do %>
+                      <%= image_tag file, alt: file.filename.to_s, class: "chat-file-preview" %>
+                    <% end %>
+                  <% else %>
+                    <%= link_to file.filename.to_s, url_for(file), target: "_blank", rel: "noopener", class: "chat-file-link" %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    <% else %>
+      <p class="profile-note">まだメッセージはありません。最初の一言を送ってください。</p>
+    <% end %>
+  </div>
+
+  <div class="chat-form-wrap">
+    <%= form_with model: @message, url: chat_user_path(@user), local: true do |f| %>
+      <div class="form-group">
+        <%= f.label :body, "メッセージ", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.text_area :body, class: "chat-textarea", placeholder: "メッセージを入力してください" %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :files, "ファイル添付", style: "background-color: #E0E0E0; color: #222;" %><br>
+        <%= f.file_field :files, multiple: true, class: "chat-file-input", accept: "image/*,video/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.txt" %>
+        <p class="chat-hint">画像、PDF、Officeファイル、ZIP などを送信できます。</p>
+        <% if @message.errors.any? %>
+          <% @message.errors.full_messages.each do |message| %>
+            <p class="chat-error"><%= message %></p>
+          <% end %>
+        <% end %>
+      </div>
+
+      <div class="profile-actions">
+        <%= f.submit "送信", class: "button" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="profile-actions">
+    <%= link_to "プロフィールへ戻る", user_path(@user), class: "button" %>
+    <%= link_to "マッチ一覧", matches_users_path, class: "button" %>
+    <%= link_to "ユーザー一覧へ戻る", users_path, class: "button" %>
+  </div>
+</div>

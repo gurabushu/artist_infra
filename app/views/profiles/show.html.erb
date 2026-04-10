@@ -1,0 +1,60 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<h2 class="session-title">マイページ</h2>
+
+<div class="profile-card mypage-form">
+  <h3 style="background-color: #E0E0E0; margin-bottom: 16px;">プロフィール設定</h3>
+
+  <%= form_with model: @profile, url: mypage_path, method: :patch, local: true do |f| %>
+    <div class="form-group">
+      <%= f.label :display_name, "表示名", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_field :display_name %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :avatar_url, "顔写真URL", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.url_field :avatar_url, placeholder: "https://example.com/avatar.jpg" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :avatar_image, "顔写真アップロード", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.file_field :avatar_image, accept: "image/*" %>
+      <% if @profile.avatar_image.attached? %>
+        <p style="background-color: #E0E0E0; color: #222; margin-top: 8px;">
+          現在のファイル: <%= @profile.avatar_image.filename %>
+        </p>
+        <p style="background-color: #E0E0E0; margin-top: 8px;">
+          <%= button_to "顔写真ファイルを削除", avatar_image_mypage_path, method: :delete, class: "button danger-button", form: { class: "inline-button-form" } %>
+        </p>
+      <% end %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :genre, "職種の詳細", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_field :genre, placeholder: "例: シンガーソングライター / UIデザイナー" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :area, "活動エリア", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_field :area, placeholder: "例: 東京 / 全国対応 / オンライン" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :website_url, "ポートフォリオURL", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.url_field :website_url, placeholder: "https://portfolio.example.com" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :bio, "自己紹介文", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_area :bio, placeholder: "経歴、得意分野、対応できる内容などを入力してください" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit "プロフィールを保存", class: "button" %>
+    </div>
+  <% end %>
+
+  <div class="cta" style="background-color: #E0E0E0; margin-bottom: 0;">
+    <%= link_to "自分のプロフィールを見る", user_path(current_user), class: "button" %>
+  </div>
+</div>
