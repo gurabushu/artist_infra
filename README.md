@@ -1,24 +1,34 @@
-# README
+# 個人アーティストのための営業インフラネットワークアプリ
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
 
-Things you may want to cover:
+## １、サービス概要
+本サービスは、ミュージシャンやイラストレーター等の個人アーティストを対象とした「半マネージャー的プラットフォーム」です。
+既存のスポット的なスキル売買とは異なり、アーティストが安定して創作に専念できる仕組みの提供を目的としています。
+機能面では、スキルやジャンルに基づく営業代行的マッチング、実績掲載、案件管理を網羅しています。
 
-* Ruby version
+最大の特徴は収益の安定化支援であり、サブスクリプション型の継続案件設計や、アプリ内での同業者によるファン形成・支援機能を導入しています
 
-* System dependencies
+信頼に基づくネットワークインフラを構築し、アーティストの「活動と実生活の安定」を支えるインフラを目指します。
 
-* Configuration
+---
 
-* Database creation
 
-* Database initialization
+## 2、開発の背景
+才能は諸刃の剣である。それは鋭い切れ味のあるナイフと同じで、扱い方を間違えれば自身を傷つけてしまうものだ。
+繊細で努力家、ストイックで真面目。人思いやれて素敵な才能を持つ人たちが世の中において、できるだけ損な役回りやつまらない想いをして欲しくない。
+そう考えたとき、開発者の私は、自分が素敵だ大切だと思う人たちを最大限エコ贔屓しようと決め、開発をするに至る。
+これは共産主義的な不平等への是正ではなく、互いが互いに身内を贔屓し合うことで初めて、平等であると主張する。
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
+---
 
-* Deployment instructions
 
-* ...
+## ３、ER図
+<img width="1470" height="794" alt="TOP画" src="https://github.com/user-attachments/files/26559164/ER.pdf"/>
+
+---
+
+## 3、サービスURL
+
+
+---
