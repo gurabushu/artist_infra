@@ -1,0 +1,51 @@
+
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<%= image_tag "webapply_top_visual.png", alt: "Where talent is respected", class: "top-visual" %>
+
+ <h3>サービス概要</h3>
+
+<section class="features">
+  <div class="feature">
+    <h2>才能を、そのまま届ける</h2>
+    <p>
+      作品や実績をシンプルにまとめ、あなたの価値を正しく伝えるプロフィールを作成。<br>
+      表現に集中しながら、機会につながる導線を整えます。
+    </p>
+  </div>
+
+  <div class="feature">
+    <h2>営業を、仕組みに変える</h2>
+    <p>
+      案件とのマッチングや提案の流れを最適化。<br>
+      個人では難しかった営業活動を、無理なく継続できる形にします。
+    </p>
+  </div>
+
+  <div class="feature">
+    <h2>つながりが、機会になる</h2>
+    <p>
+      アーティスト同士、そして企業との出会いを生み出す場。<br>
+      偶然ではなく、継続的なチャンスが巡る環境を提供します。
+    </p>
+  </div>
+</section>
+
+<div class="feature">
+  <h2>創作に、集中できる世界へ</h2>
+  <p>
+    才能が正しく評価され、仕事につながる仕組みを。
+    Creator Linkで、新しい活動の形を始めましょう。
+  </p>
+</div>
+
+<div class="cta">
+  <% if logged_in? %>
+    <%= link_to "ユーザー一覧を見る", users_path, class: "button" %>
+  <% else %>
+    <%= link_to "無料で始める", new_user_path, class: "button" %>
+    <%= link_to "ログイン", login_path, class: "button secondary" %>
+  <% end %>
+</div>
+
+

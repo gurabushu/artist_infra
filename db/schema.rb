@@ -10,7 +10,35 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_08_043118) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_10_100000) do
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.bigint "record_id", null: false
+    t.string "record_type", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.string "content_type"
+    t.datetime "created_at", null: false
+    t.string "filename", null: false
+    t.string "key", null: false
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
   create_table "applications", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "project_id", null: false
@@ -75,6 +103,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_043118) do
     t.index ["user_id"], name: "index_favorites_on_user_id"
   end
 
+  create_table "messages", force: :cascade do |t|
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.integer "recipient_id", null: false
+    t.integer "sender_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["recipient_id"], name: "index_messages_on_recipient_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
+  end
+
   create_table "pro_accounts", force: :cascade do |t|
     t.datetime "approved_at"
     t.datetime "created_at", null: false
@@ -87,6 +125,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_043118) do
 
   create_table "profiles", force: :cascade do |t|
     t.string "area"
+    t.string "avatar_url"
     t.text "bio"
     t.datetime "created_at", null: false
     t.string "display_name"
@@ -190,6 +229,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_043118) do
     t.index ["user_id"], name: "index_works_on_user_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "applications", "projects"
   add_foreign_key "applications", "users"
   add_foreign_key "billing_subscriptions", "users"
@@ -201,6 +242,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_08_043118) do
   add_foreign_key "creator_subscriptions", "subscription_plans"
   add_foreign_key "favorites", "users"
   add_foreign_key "favorites", "users", column: "target_user_id"
+  add_foreign_key "messages", "users", column: "recipient_id"
+  add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "pro_accounts", "users"
   add_foreign_key "profiles", "users"
   add_foreign_key "projects", "users"

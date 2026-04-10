@@ -1,10 +1,11 @@
 class SessionsController < ApplicationController
+
   def new
+    # Renders the login form.
   end
 
   def create
     user = User.find_by(email: params[:email])
-
     if user&.authenticate(params[:password])
       session[:user_id] = user.id
       redirect_to users_path, notice: "ログインしました"
@@ -17,5 +18,9 @@ class SessionsController < ApplicationController
   def destroy
     session.delete(:user_id)
     redirect_to login_path, notice: "ログアウトしました"
+  end
+
+  def back_to_home
+    redirect_to root_path
   end
 end

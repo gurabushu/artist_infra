@@ -1,2 +1,152 @@
-<h1>Users#show</h1>
-<p>Find me in app/views/users/show.html.erb</p>
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<div class="profile-card">
+  <div class="profile-hero">
+    <% if @profile&.avatar_source.present? %>
+      <%= image_tag @profile.avatar_source, alt: "顔写真", class: "profile-photo" %>
+    <% else %>
+      <div class="profile-photo-placeholder">顔写真未設定</div>
+    <% end %>
+
+    <div class="profile-main">
+      <h2 class="profile-name"><%= @profile&.display_name.presence || @user.name %></h2>
+      <p class="profile-meta">ランク: <%= @user.rank_label %></p>
+      <p class="profile-meta">平均評価: <%= @user.received_review_count.positive? ? @user.average_received_rating : "まだ評価なし" %></p>
+      <p class="profile-meta">完了案件数: <%= @user.completed_contracts_count %></p>
+      <p class="profile-meta">職種: <%= @user.role_label %></p>
+      <p class="profile-meta">職種詳細: <%= @profile&.genre.presence || "未設定" %></p>
+      <p class="profile-meta">活動エリア: <%= @profile&.area.presence || "未設定" %></p>
+      <p class="profile-meta">いいね数: <%= @favorite_count %></p>
+      <% if current_user != @user %>
+        <p class="profile-meta">マッチ状況: <%= @matched ? "相互いいねで成立" : "まだ成立していません" %></p>
+      <% end %>
+
+      <div class="profile-actions">
+        <% if current_user == @user %>
+          <%= link_to "マイページで編集", mypage_path, class: "button" %>
+        <% else %>
+          <% if @matched %>
+            <%= link_to "チャットへ", chat_user_path(@user), class: "button" %>
+          <% end %>
+
+          <% if @favorite.present? %>
+            <%= button_to "いいね解除", user_favorite_path(@user), method: :delete, class: "button logout-button", form: { class: "logout-form" } %>
+          <% else %>
+            <%= button_to "いいね", user_favorite_path(@user), method: :post, class: "button logout-button", form: { class: "logout-form" } %>
+          <% end %>
+        <% end %>
+      </div>
+
+      <% if current_user != @user && !@matched %>
+        <p class="profile-note">相手からもいいねされるとマッチが成立し、チャットが使えるようになります。</p>
+      <% end %>
+
+      <% if @active_subscription_plan.present? %>
+        <div class="cta" style="background-color: #E0E0E0; margin-top: 16px;">
+          <p style="background-color: #E0E0E0; color: #222; margin-bottom: 8px;">
+            継続案件プラン: <strong><%= @active_subscription_plan.title %></strong>
+          </p>
+          <p style="background-color: #E0E0E0; color: #222; margin-bottom: 8px;">
+            月額・周期: <%= @active_subscription_plan.price %>円 / <%= @active_subscription_plan.cycle.presence || "未設定" %>
+          </p>
+          <% if @active_subscription_plan.description.present? %>
+            <p style="background-color: #E0E0E0; color: #222; margin-bottom: 8px;"><%= @active_subscription_plan.description %></p>
+          <% end %>
+          <% if current_user != @user %>
+            <% if @creator_subscription.present? %>
+              <p style="background-color: #E0E0E0; color: #1b5e20; margin: 0;">継続案件に参加中です。</p>
+            <% else %>
+              <%= button_to "継続案件を申し込む", user_creator_subscription_path(@user), method: :post, class: "button", form: { class: "logout-form" } %>
+            <% end %>
+          <% end %>
+        </div>
+      <% elsif current_user == @user %>
+        <p class="profile-note">シルバーランク以上かつアプリ課金中になると、継続案件プランを公開できます。</p>
+      <% end %>
+    </div>
+  </div>
+
+  <section class="profile-section">
+    <h3>ポートフォリオ</h3>
+    <% if @profile&.portfolio_url.present? %>
+      <p><%= link_to "ポートフォリオを見る", @profile.portfolio_url, class: "button", target: "_blank", rel: "noopener" %></p>
+    <% else %>
+      <p>ポートフォリオURLはまだ設定されていません。</p>
+    <% end %>
+
+    <% if @works.any? %>
+      <ul class="portfolio-list">
+        <% @works.each do |work| %>
+          <li>
+            <strong><%= work.title %></strong>
+            <% if work.work_type.present? %>
+              <span> / <%= work.work_type %></span>
+            <% end %>
+            <% if work.external_url.present? %>
+              <span> - <%= link_to "作品リンク", work.external_url, target: "_blank", rel: "noopener" %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>公開中の作品はまだありません。</p>
+    <% end %>
+  </section>
+
+  <section class="profile-section">
+    <h3>自己紹介</h3>
+    <% if @profile&.bio.present? %>
+      <p><%= simple_format(@profile.bio) %></p>
+    <% else %>
+      <p>自己紹介文はまだ設定されていません。</p>
+      <% if current_user == @user %>
+        <p class="profile-note">自己紹介文はマイページから設定できます。</p>
+      <% end %>
+    <% end %>
+  </section>
+
+  <section class="profile-section">
+    <h3>取引後の評価</h3>
+    <% if @received_reviews.any? %>
+      <ul class="portfolio-list">
+        <% @received_reviews.each do |review| %>
+          <li>
+            <strong><%= review.rating %> / 5</strong>
+            <span> - <%= review.reviewer.name.presence || review.reviewer.email %></span>
+            <% if review.contract&.project.present? %>
+              <span> / 案件: <%= review.contract.project.title %></span>
+            <% end %>
+            <% if review.comment.present? %>
+              <p><%= review.comment %></p>
+            <% end %>
+          </li>
+        <% end %>
+      </ul>
+    <% else %>
+      <p>まだ評価はありません。</p>
+    <% end %>
+  </section>
+
+  <% if current_user != @user %>
+    <section class="profile-section">
+      <h3>完了済み取引と評価</h3>
+      <% if @completed_contracts.any? %>
+        <ul class="portfolio-list">
+          <% @completed_contracts.each do |contract| %>
+            <li>
+              <strong><%= contract.project.title %></strong>
+              <span> / 契約種別: <%= contract.contract_type_subscription? ? "継続" : "単発" %></span>
+              <% if contract.reviewable_by?(current_user) %>
+                <span> - <%= link_to "この取引を評価する", new_contract_review_path(contract), class: "button" %></span>
+              <% else %>
+                <span> - 評価済み</span>
+              <% end %>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <p>このユーザーとの完了済み取引はまだありません。</p>
+      <% end %>
+    </section>
+  <% end %>
+</div>

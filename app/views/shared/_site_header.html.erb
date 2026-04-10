@@ -1,0 +1,20 @@
+<header class="header">
+  <h1 class="title"> <%= title %> </h1>
+  <nav class="navheader">
+    <ul class="nav-list">
+      <li><%= link_to "ホーム", root_path %></li>
+      <% if logged_in? %>
+        <li><%= link_to "ユーザー一覧", users_path %></li>
+        <li><%= link_to "マッチ一覧", matches_users_path %></li>
+        <li><%= link_to "マイページ", mypage_path %></li>
+        <li class="nav-status"><%= current_user.name.presence || current_user.email %> さん</li>
+        <li>
+          <%= button_to "ログアウト", logout_path, method: :delete, class: "button logout-button", form: { class: "logout-form" } %>
+        </li>
+      <% else %>
+        <li><%= link_to "新規登録", new_user_path %></li>
+        <li><%= link_to "ログイン", login_path %></li>
+      <% end %>
+    </ul>
+  </nav>
+</header>

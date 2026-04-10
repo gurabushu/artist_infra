@@ -1,0 +1,37 @@
+<%= render "shared/site_header", title: "Creator Link" %>
+
+<div class="profile-card mypage-form">
+  <h2 class="session-title">取引後の評価</h2>
+
+  <div class="form-group">
+    <p style="background-color: #E0E0E0; color: #222;">案件名: <%= @contract.project.title %></p>
+    <p style="background-color: #E0E0E0; color: #222;">評価対象: <%= @reviewee.name.presence || @reviewee.email %></p>
+  </div>
+
+  <% if @review.errors.any? %>
+    <div class="form-group">
+      <p style="background-color: #E0E0E0; color: #b00020; margin-bottom: 8px;">入力内容を確認してください。</p>
+      <ul style="background-color: #E0E0E0; color: #b00020; margin: 0; padding-left: 20px;">
+        <% @review.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: [@contract, @review], local: true do |f| %>
+    <div class="form-group">
+      <%= f.label :rating, "評価", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.select :rating, options_for_select((1..5).map { |value| ["#{value} / 5", value] }, @review.rating), { include_blank: "選択してください" } %>
+    </div>
+
+    <div class="form-group">
+      <%= f.label :comment, "コメント", style: "background-color: #E0E0E0; color: #222;" %><br>
+      <%= f.text_area :comment, placeholder: "良かった点や改善してほしい点を書いてください" %>
+    </div>
+
+    <div class="form-group">
+      <%= f.submit "評価を送信", class: "button" %>
+    </div>
+  <% end %>
+</div>
