@@ -1,13 +1,2 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
-one:
-  project: one
-  user: one
-  proposal: MyText
-  status: 1
-
-two:
-  project: two
-  user: two
-  proposal: MyText
-  status: 1
+one: {}
+two: {}
